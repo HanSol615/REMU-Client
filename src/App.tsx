@@ -7,6 +7,7 @@ import Join from './pages/join';
 import Login from './pages/login';
 import Main from './pages/main';
 import MyPage from './pages/mypage';
+import Search from './pages/search';
 
 const App: React.FC = () => {
   return (
@@ -14,11 +15,12 @@ const App: React.FC = () => {
       <GlobalStyle />
       <ConditionalNavbar>
         <Routes>
-          <Route path="/" element={<Navigate to="/auth/login" />} />
+          <Route path="/" element={<Navigate to="/main" />} />
           <Route path="/auth/join" element={<Join />} />
           <Route path="/auth/login" element={<Login />} />
           <Route path="/main" element={<Main />} />
           <Route path="/mypage" element={<MyPage />} />
+          <Route path="/search" element={<Search />} />
         </Routes>
       </ConditionalNavbar>
     </BrowserRouter>
@@ -27,7 +29,7 @@ const App: React.FC = () => {
 
 const ConditionalNavbar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
-  const shouldShowNavbar = !['/auth/login', '/auth/join'].includes(location.pathname);
+  const shouldShowNavbar = !['/auth/login', '/auth/join', '/main'].includes(location.pathname);
 
   return (
     <>

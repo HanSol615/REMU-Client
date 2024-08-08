@@ -4,7 +4,7 @@ import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
 import { getToken, removeToken } from '../store/authStore';
 
 const BASE_URL = 'http://localhost:8888';
-const DEFAULT_TIMEOUT = 30000;
+const DEFAULT_TIMEOUT = 300000;
 
 export const createClient = (config?: AxiosRequestConfig) => {
     const axiosInstance = axios.create({
