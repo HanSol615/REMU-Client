@@ -8,6 +8,7 @@ import Login from './pages/login';
 import Main from './pages/main';
 import MyPage from './pages/mypage';
 import Search from './pages/search';
+import Detail from './pages/detail';
 
 const App: React.FC = () => {
   return (
@@ -21,6 +22,7 @@ const App: React.FC = () => {
           <Route path="/main" element={<Main />} />
           <Route path="/mypage" element={<MyPage />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/detail" element={<Detail />}/>
         </Routes>
       </ConditionalNavbar>
     </BrowserRouter>
@@ -29,7 +31,7 @@ const App: React.FC = () => {
 
 const ConditionalNavbar: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const location = useLocation();
-  const shouldShowNavbar = !['/auth/login', '/auth/join', '/main'].includes(location.pathname);
+  const shouldShowNavbar = !['/auth/login', '/auth/join'].includes(location.pathname);
 
   return (
     <>

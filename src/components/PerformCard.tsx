@@ -1,22 +1,19 @@
-// src/components/NewPerformCard.tsx
-
 import React from 'react';
 import Card from 'react-bootstrap/Card';
 import Badge from 'react-bootstrap/Badge';
 import Image from 'react-bootstrap/Image';
-import Button from 'react-bootstrap/Button';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import styled from 'styled-components';
 
-interface NewPerformCardProps {
+interface PerformCardProps {
   poster: string;
   title: string;
   rating: string;
+  onClick: () => void;
 }
 
-const NewPerformCard: React.FC<NewPerformCardProps> = ({ poster, title, rating }) => {
+const PerformCard: React.FC<PerformCardProps> = ({ poster, title, rating, onClick }) => {
   return (
-    <Card border="secondary">
+    <ClickableCard border="secondary" onClick={onClick}>
       <Card.Header>
         <Badge bg="primary">{rating}</Badge>
       </Card.Header>
@@ -28,16 +25,15 @@ const NewPerformCard: React.FC<NewPerformCardProps> = ({ poster, title, rating }
           <TitleWrapper>
             <Card.Title>{title}</Card.Title>
           </TitleWrapper>
-          <ButtonWrapper>
-            <Button variant="primary" size="lg">
-              상세 보기
-            </Button>
-          </ButtonWrapper>
         </CardContent>
       </Card.Body>
-    </Card>
+    </ClickableCard>
   );
 };
+
+const ClickableCard = styled(Card)`
+  cursor: pointer; /* Ensure the card appears clickable */
+`;
 
 const CardContent = styled.div`
   display: flex;
@@ -46,19 +42,14 @@ const CardContent = styled.div`
 `;
 
 const PosterWrapper = styled.div`
-  flex: 0 0 auto; /* Prevent resizing */
+  flex: 0 0 auto;
   width: 100px;
-  aspect-ratio: 1 / 1.4142; /* Maintain A2 ratio */
+  aspect-ratio: 1 / 1.4142;
 `;
 
 const TitleWrapper = styled.div`
-  flex: 1; /* Allow this column to take up remaining space */
+  flex: 1;
   padding-left: 15px;
 `;
 
-const ButtonWrapper = styled.div`
-  flex: 0 0 auto;
-  text-align: right;
-`;
-
-export default NewPerformCard;
+export default PerformCard;

@@ -46,6 +46,16 @@ export const getSerchResult = async (text: string, category: string, page: numbe
   return response.data;
 };
 
+// 공연 상세 정보 조회
+export const getDetails = async (prfId: string) => {
+  const response = await httpClient.get('/detail', {
+    params: {
+      prfId
+    },
+  });
+  return response.data;
+};
+
 // 사용자 정보 조회
 export const getUserInfo = async (accessToken: string) => {
   const response = await httpClient.get('/user/info', {
@@ -65,6 +75,30 @@ export const getUserReviews = async (accessToken: string) => {
 // 사용자 정보 업데이트
 export const updateUserInfo = async (data: { nickname: string; email: string }, accessToken: string) => {
   const response = await httpClient.patch('/user', data, {
+    headers: { Authorization: `${accessToken}` },
+  });
+  return response.data;
+};
+
+// 리뷰 등록
+export const createReview = async (data: {prfnm: string, pf_id: string, title: string, content: string, rating: number}, accessToken: string) => {
+  const response = await httpClient.post('/review/addition', data, {
+    headers: { Authorization: `${accessToken}` },
+  });
+  return response.data;
+};
+
+// 리뷰 수정
+export const updateReview = async (data: { prfnm: string, pf_id: string, title: string, content: string, rating: number }, id: number, accessToken: string) => {
+  const response = await httpClient.put(`/review/${id}`, data, {
+    headers: { Authorization: `${accessToken}` },
+  });
+  return response.data;
+};
+
+// 리뷰 삭제
+export const deleteReview = async (id: number, accessToken: string) => {
+  const response = await httpClient.delete(`/review/${id}`, {
     headers: { Authorization: `${accessToken}` },
   });
   return response.data;

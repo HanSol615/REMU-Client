@@ -1,6 +1,8 @@
+// src/pages/mypage.tsx
+
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo, updateUserInfo, changePassword, logout, deleteAccount, getUserReviews } from '../services/api';
+import { getUserInfo, updateUserInfo, changePassword, logout, deleteAccount, getUserReviews, deleteReview } from '../services/api'; // Import deleteReview
 import styled from 'styled-components';
 import CustomTabs from '../components/Tabs';
 import ReviewCard from '../components/ReviewCard';
@@ -22,15 +24,13 @@ const MyPage: React.FC = () => {
     const fetchData = async () => {
       if (accessToken) {
         try {
-          // Fetch user info from the server
           const { nickname, email } = await getUserInfo(accessToken);
           setUserData({ nickname, email });
           setNewNickname(nickname);
           setNewEmail(email);
 
-          // Fetch user reviews from the server
           const response = await getUserReviews(accessToken);
-          const reviews = response.reviews; // Extract reviews from the response
+          const reviews = response.reviews;
           setUserReviews(reviews);
         } catch (error) {
           console.error('Failed to fetch user data:', error);
@@ -107,6 +107,19 @@ const MyPage: React.FC = () => {
       }
     }
   };
+
+  const handleDeleteReview = async (reviewId: number) => {
+    if (accessToken && window.confirm('이 리뷰를 삭제하시겠습니까?')) {
+      try {
+        await deleteReview(reviewId, accessToken);
+        setUserReviews((prevReviews) => prevReviews.filter(review => review.review_id !== reviewId));
+        alert('리뷰가 삭제되었습니다.');
+      } catch (error) {
+        console.error('Failed to delete review:', error);
+      }
+    }
+  };
+
 
   const getBgType = (rating: number) => {
     if (rating >= 9) {
@@ -188,6 +201,8 @@ const MyPage: React.FC = () => {
                 content={review.content}
                 performanceTitle={review.prfnm}
                 bgType={getBgType(parseFloat(review.rating))}
+                showKebab={true}
+                onDelete={() => handleDeleteReview(review.review_id)} // Pass the handler to the component
               />
             );
           })}
@@ -197,7 +212,7 @@ const MyPage: React.FC = () => {
       )}
     </Section>
   );
-  
+    
   return (
     <Container>
       <CustomTabs

@@ -1,23 +1,22 @@
-// src/pages/Search.tsx
 import { useState } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import BasicButtonExample from '../components/Dropdown';
-import NewPerformCard from '../components/NewPerformCard';
+import PerformCard from '../components/PerformCard';
 import { getSerchResult } from '../services/api';
 import Pagination from 'react-bootstrap/Pagination';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-// Define the interface for search results
 interface SearchResult {
-  pf_id: string; // or number, depending on your data
+  pf_id: string;
   poster: string;
   prfnm: string;
-  rating: string; // Assuming 'rating' is part of the result
+  rating: string;
 }
 
 const Search: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { searchText, category: initialCategory, response: initialResponse } = location.state;
 
   const [category, setCategory] = useState<string>(initialCategory);
@@ -40,17 +39,17 @@ const Search: React.FC = () => {
     setLastPage(response.last_page);
   };
 
+  const handleCardClick = (pf_id: string) => {
+    navigate(`/detail?prfId=${pf_id}`);
+  };
+
   const renderPagination = () => {
     const pages = [];
 
-    // Handle previous page button
     if (page > 1) {
-      pages.push(
-        <Pagination.Prev key="prev" onClick={() => handlePageChange(page - 1)} />
-      );
+      pages.push(<Pagination.Prev key="prev" onClick={() => handlePageChange(page - 1)} />);
     }
 
-    // Handle double arrows for moving to the first page
     if (page > 2) {
       pages.push(
         <Pagination.Item key="double-prev" onClick={() => handlePageChange(1)}>
@@ -59,21 +58,16 @@ const Search: React.FC = () => {
       );
     }
 
-    // Show current page
     pages.push(
       <Pagination.Item key="current" active>
         {page}
       </Pagination.Item>
     );
 
-    // Handle next page button
     if (!lastPage) {
-      pages.push(
-        <Pagination.Next key="next" onClick={() => handlePageChange(page + 1)} />
-      );
+      pages.push(<Pagination.Next key="next" onClick={() => handlePageChange(page + 1)} />);
     }
 
-    // Handle single arrows if there's no next page
     if (page > 1 && lastPage) {
       pages.push(
         <Pagination.Item key="single-prev" onClick={() => handlePageChange(page - 1)}>
@@ -99,11 +93,12 @@ const Search: React.FC = () => {
         ) : (
           <ResultsContainer>
             {searchResults.map((result: SearchResult) => (
-              <NewPerformCard 
+              <PerformCard 
                 key={result.pf_id} 
                 poster={result.poster} 
                 title={result.prfnm} 
-                rating={result.rating} // Include the rating if it's part of the result
+                rating={result.rating}
+                onClick={() => handleCardClick(result.pf_id)} // Pass prfId on click
               />
             ))}
           </ResultsContainer>
@@ -111,9 +106,7 @@ const Search: React.FC = () => {
       </Content>
       {searchResults.length > 0 && (
         <PaginationWrapper>
-          <Pagination>
-            {renderPagination()}
-          </Pagination>
+          <Pagination>{renderPagination()}</Pagination>
         </PaginationWrapper>
       )}
     </Container>
@@ -123,36 +116,36 @@ const Search: React.FC = () => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
-  justify-content: center; /* Center content vertically */
-  align-items: center; /* Center content horizontally */
-  height: 100vh; /* Full viewport height */
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
   padding: 20px;
-  overflow: auto; /* Allow scrolling if content overflows */
+  overflow: auto;
 `;
 
 const Content = styled.div`
-  flex: 1; /* Allow this to take up available space */
+  flex: 1;
   width: 100%;
-  overflow: auto; /* Allow scrolling within content area if needed */
+  overflow: auto;
 `;
 
 const Header = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
-  align-items: flex-start; /* Align header items to the left */
+  align-items: flex-start;
   margin-bottom: 20px;
 `;
 
 const Title = styled.h1`
-  font-size: 2rem; /* Increase font size */
-  font-weight: bold; /* Make font thicker */
+  font-size: 2rem;
+  font-weight: bold;
   margin-bottom: 10px;
 `;
 
 const ResultsContainer = styled.div`
   display: grid;
-  grid-template-columns: 1fr; /* Only one card per row */
+  grid-template-columns: 1fr;
   gap: 20px;
   width: 100%;
 `;
