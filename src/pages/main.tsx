@@ -78,7 +78,7 @@ const Main: React.FC = () => {
         ) : (
           <>
             <Link onClick={() => navigate('/auth/login')}>로그인</Link>
-            <Link onClick={() => navigate('/auth/signup')}>회원가입</Link>
+            <Link onClick={() => navigate('/auth/join')}>회원가입</Link>
           </>
         )}
       </AuthLink>
