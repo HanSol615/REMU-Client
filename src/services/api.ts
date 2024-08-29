@@ -89,8 +89,8 @@ export const createReview = async (data: {prfnm: string, pf_id: string, title: s
 };
 
 // 리뷰 수정
-export const updateReview = async (data: { prfnm: string, pf_id: string, title: string, content: string, rating: number }, id: number, accessToken: string) => {
-  const response = await httpClient.put(`/review/${id}`, data, {
+export const updateReview = async (id: number, reviewData: { title: string; content: string; rating: number }, accessToken: string) => {
+  const response = await httpClient.put(`/review/${id}`, reviewData, {
     headers: { Authorization: `${accessToken}` },
   });
   return response.data;

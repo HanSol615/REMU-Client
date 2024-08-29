@@ -12,7 +12,7 @@ type ReviewCardProps = {
   bgType: string;
   showKebab?: boolean;
   onDelete?: () => void;
-  onEdit?: () => void;
+  onEdit?: () => void; // Add the onEdit prop
 };
 
 const ReviewCard: React.FC<ReviewCardProps> = ({ title, rating, content, performanceTitle, bgType, showKebab, onDelete, onEdit }) => {
@@ -20,7 +20,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, rating, content, perform
   const menuRef = useRef<HTMLDivElement | null>(null);
 
   const toggleMenuVisibility = () => {
-    setMenuVisible(!menuVisible);
+    setMenuVisible(prev => !prev);
   };
 
   useEffect(() => {
@@ -56,8 +56,8 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, rating, content, perform
       </CardHeader>
       {menuVisible && (
         <Menu ref={menuRef}>
-          <MenuItem onClick={onEdit}>수정</MenuItem>
-          <MenuItem onClick={onDelete}>삭제</MenuItem>
+          {onEdit && <MenuItem onClick={onEdit}>수정</MenuItem>}
+          {onDelete && <MenuItem onClick={onDelete}>삭제</MenuItem>}
         </Menu>
       )}
       <CardBody>{content}</CardBody>
@@ -66,6 +66,7 @@ const ReviewCard: React.FC<ReviewCardProps> = ({ title, rating, content, perform
   );
 };
 
+// Styled components
 const Card = styled.div`
   border: 1px solid #ccc;
   border-radius: 8px;

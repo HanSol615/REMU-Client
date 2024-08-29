@@ -2,10 +2,11 @@
 
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getUserInfo, updateUserInfo, changePassword, logout, deleteAccount, getUserReviews, deleteReview } from '../services/api'; // Import deleteReview
+import { getUserInfo, updateUserInfo, changePassword, logout, deleteAccount, getUserReviews, deleteReview, updateReview } from '../services/api'; // Import deleteReview
 import styled from 'styled-components';
 import CustomTabs from '../components/Tabs';
 import ReviewCard from '../components/ReviewCard';
+import OffCanvas from '../components/OffCanvas';
 
 const MyPage: React.FC = () => {
   const navigate = useNavigate();
@@ -17,6 +18,9 @@ const MyPage: React.FC = () => {
   const [newPasswordConfirm, setNewPasswordConfirm] = useState<string>('');
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [userReviews, setUserReviews] = useState<any[]>([]);
+  const [isOffCanvasOpen, setIsOffCanvasOpen] = useState<boolean>(false);
+  const [selectedReview, setSelectedReview] = useState<any>(null);
+
 
   const accessToken = localStorage.getItem('accessToken');
 
@@ -108,7 +112,32 @@ const MyPage: React.FC = () => {
     }
   };
 
-  const handleDeleteReview = async (reviewId: number) => {
+  const handleEditReview = (review: any) => {
+    setSelectedReview(review);
+    setIsOffCanvasOpen(true);
+  };
+
+  const handleSubmitReview = async (reviewData: { title: string; content: string; rating: number }) => {
+    if (accessToken && selectedReview) {
+      try {
+        // Correctly pass review ID, reviewData, and accessToken
+        await updateReview(selectedReview.review_id, reviewData, accessToken);
+  
+        // Refresh reviews after successful update
+        const response = await getUserReviews(accessToken);
+        setUserReviews(response.reviews);
+        alert('리뷰가 업데이트되었습니다.');
+        setIsOffCanvasOpen(false);
+      } catch (error) {
+        console.error('Failed to update review:', error);
+        alert('리뷰 업데이트에 실패했습니다.');
+      }
+    } else {
+      alert('로그인이 필요합니다.');
+    }
+  };
+
+    const handleDeleteReview = async (reviewId: number) => {
     if (accessToken && window.confirm('이 리뷰를 삭제하시겠습니까?')) {
       try {
         await deleteReview(reviewId, accessToken);
@@ -202,7 +231,8 @@ const MyPage: React.FC = () => {
                 performanceTitle={review.prfnm}
                 bgType={getBgType(parseFloat(review.rating))}
                 showKebab={true}
-                onDelete={() => handleDeleteReview(review.review_id)} // Pass the handler to the component
+                onDelete={() => handleDeleteReview(review.review_id)}
+                onEdit={() => handleEditReview(review)}
               />
             );
           })}
@@ -222,8 +252,17 @@ const MyPage: React.FC = () => {
           { eventKey: 'my-reviews', title: '나의 리뷰', content: userReviewsContent }
         ]}
       />
+      {selectedReview && (
+        <OffCanvas
+          show={isOffCanvasOpen}
+          onHide={() => setIsOffCanvasOpen(false)}
+          onSubmit={handleSubmitReview}
+          performance={{ prfnm: selectedReview.prfnm, pf_id: selectedReview.pf_id }}
+          initialReview={selectedReview}
+        />
+      )}
     </Container>
-  );
+  );  
 };
 
 const Container = styled.div`

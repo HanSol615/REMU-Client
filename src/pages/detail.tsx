@@ -158,11 +158,11 @@ const Detail: React.FC = () => {
         )}
       </ReviewsSection>
       <OffCanvas
-        show={showOffCanvas}
-        onHide={handleCloseOffCanvas}
-        onSubmit={handleReviewSubmit}
-        performance={{ prfnm: performance.prfnm, pf_id: prfId || '' }} // Ensure prfId is a string
-      />
+              show={showOffCanvas}
+              onHide={handleCloseOffCanvas}
+              onSubmit={handleReviewSubmit}
+              performance={{ prfnm: performance.prfnm, pf_id: prfId || '' }} // Ensure prfId is a string
+              initialReview={undefined}      />
     </Container>
   );
 };

@@ -6,12 +6,13 @@ interface OffCanvasProps {
   onHide: () => void;
   onSubmit: (reviewData: { prfnm: string; pf_id: string; title: string; content: string; rating: number }) => void;
   performance: { prfnm: string; pf_id: string };
+  initialReview: any;  // Add this to receive initial review data
 }
 
-const OffCanvas: React.FC<OffCanvasProps> = ({ show, onHide, onSubmit, performance }) => {
-  const [value, setValue] = useState<number>(2);
-  const [title, setTitle] = useState<string>('');
-  const [content, setContent] = useState<string>('');
+const OffCanvas: React.FC<OffCanvasProps> = ({ show, onHide, onSubmit, performance, initialReview }) => {
+  const [value, setValue] = useState<number>(initialReview?.rating || 2);
+  const [title, setTitle] = useState<string>(initialReview?.title || '');
+  const [content, setContent] = useState<string>(initialReview?.content || '');
 
   const handleRangeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setValue(parseInt(e.target.value, 10));
@@ -31,7 +32,7 @@ const OffCanvas: React.FC<OffCanvasProps> = ({ show, onHide, onSubmit, performan
   return (
     <Offcanvas show={show} onHide={onHide} placement="bottom" style={{ height: '50%' }}>
       <Offcanvas.Header closeButton>
-        <Offcanvas.Title>후기 작성</Offcanvas.Title>
+        <Offcanvas.Title>후기 수정</Offcanvas.Title>
       </Offcanvas.Header>
       <Offcanvas.Body>
         <>
